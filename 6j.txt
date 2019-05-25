@@ -1,0 +1,85 @@
+class Q
+ {
+     int Balance_Amount;
+     boolean valueSet = false;
+     
+     synchronized int get()
+     {
+         while(!valueSet)
+            try
+            {
+                wait();
+            }
+            catch(InterruptedException e)
+            {
+         System.out.println("InterruptedException caught..!!");
+            }
+         System.out.println("Got : " + num);
+         valueSet = false;
+         notify();
+         return Balance_Amount;
+     }
+     
+     synchronized void put(int amount)
+     {
+         while(valueSet)
+            try
+            {                wait();	}	
+            catch(InterruptedException e)
+            {
+         System.out.println("InterruptedException caught..!!");
+            }
+ 		  Balance_Amount = amount;
+            valueSet = true;
+            System.out.println("Put : " + Balance_Amount);
+            notify();
+     }
+ }
+ 
+ class Producer implements Runnable
+ {
+     Q que;
+	Producer(Q que)
+     {
+         this.que = que;
+         new Thread(this, "Producer").start();
+     }
+     
+     public void run()
+    {
+        int amount = 10000;
+	while(true)
+        {
+            que.put(amount);
+        }
+    }
+}
+
+class Consumer implements Runnable
+{
+    Q que;
+Consumer(Q que)
+    {
+        this.que = que;
+        new Thread(this, "Consumer").start();
+    }
+    
+    public void run()
+    {
+        while(true)
+        {
+            que.get();
+        }
+    }
+}
+
+class PCFixed
+{
+    public static void main(String args[])
+    {
+        Q que = new Q();
+        new Producer(que);
+        new Consumer(que);
+        System.out.println("Press Control-C to stop...");   
+    }
+}
