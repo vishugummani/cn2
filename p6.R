@@ -1,0 +1,11 @@
+data()
+
+data("airquality")
+sapply(airquality,class)
+nrow(airquality)
+ncol(airquality)
+is.na(airquality)
+sum(is.na(airquality))
+mean(is.na(airquality))
+na.omit(airquality)
+dim(airquality)
